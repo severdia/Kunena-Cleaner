@@ -73,7 +73,7 @@ class mod_KunenaCleanerInstallerScript
 	 * $type is the type of change (install, update or discover_install)
 	 *
 	 * @return void
-	 */
+	 */ 
 	function postflight($type, $parent) 
 	{
 		if (file_exists(JPATH_SITE .'/media/mod_kunenacleaner/upload/administrator/components/com_kunena/template/joomla25/cpanel/default.php')) {
@@ -85,8 +85,8 @@ class mod_KunenaCleanerInstallerScript
 		if (file_exists(JPATH_SITE .'/media/mod_kunenacleaner/upload/components/com_kunena/template/blue_eagle/html/credits/default.php')) {
 		JFile::copy(JPATH_SITE .'/media/mod_kunenacleaner/upload/components/com_kunena/template/blue_eagle/html/credits/default.php', JPATH_SITE .'/components/com_kunena/template/blue_eagle/html/credits/default.php');
 	}
-		if (file_exists(JPATH_SITE .'/media/mod_kunenacleaner/upload/administrator/components/com_kunena/template/crypsis/layouts/credits/default.php')) {
-		JFile::copy(JPATH_SITE .'/media/mod_kunenacleaner/upload/administrator/components/com_kunena/template/crypsis/layouts/credits/default.php', JPATH_SITE .'/components/com_kunena/template/crypsis/layouts/credits/default.php');
+		if (file_exists(JPATH_SITE .'/media/mod_kunenacleaner/upload/components/com_kunena/template/crypsis/layouts/credits/default.php')) {
+		JFile::copy(JPATH_SITE .'/media/mod_kunenacleaner/upload/components/com_kunena/template/crypsis/layouts/credits/default.php', JPATH_SITE .'/components/com_kunena/template/crypsis/layouts/credits/default.php');
 	}
 		if (file_exists(JPATH_SITE .'/media/mod_kunenacleaner/upload/libraries/kunena/view.php')) {
 		JFile::copy(JPATH_SITE .'/media/mod_kunenacleaner/upload/libraries/kunena/view.php',JPATH_SITE .'/libraries/kunena/view.php');
@@ -101,6 +101,22 @@ class mod_KunenaCleanerInstallerScript
 		$query->where($conditions);
 		$db->setQuery($query);
 		$db->execute();
+                $query1 = $db->getQuery(true);
+		$conditions = array(
+		$db->quoteName('module') . ' = "mod_kunenacleaner"', 
+		);
+		$query1->delete($db->quoteName('#__modules'));
+		$query1->where($conditions);
+		$db->setQuery($query1);
+		$db->execute();
+                
+                $query2 = $db->getQuery(true);
+                $query2='UPDATE #__update_sites SET enabled="0" WHERE (name="Kunena 4.0 Update Site" or name="Kunena 5.0 Update Site") and enabled=1';
+                $db->update($query2);
+
+                $db->setQuery($query2);
+
+                $result = $db->execute();
 		JFolder::delete(JPATH_ROOT . '/media/mod_kunenacleaner');
 		JFolder::delete(JPATH_ROOT . '/modules/mod_kunenacleaner');
 	}
